@@ -36,14 +36,18 @@ jobs:
       run: |
         rm -rf src node_modules .git .github .gitignore package.json package-lock.json composer.json composer.lock phpcs.xml.dist
 
+    - name: Derive Repository Name
+      id: repo_name
+      run: echo "name=${GITHUB_REPOSITORY##*/}" >> $GITHUB_OUTPUT
+
     - name: Create archive
-      run: zip -r plugin-${{ github.ref_name }}.zip .
+      run: zip -r ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip .
 
     - name: Upload Release Asset
       uses: actions/upload-artifact@v2
       with:
-        name: plugin-${{ github.ref_name }}.zip
-        path: plugin-${{ github.ref_name }}.zip
+        name: ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip
+        path: ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip
 
   release:
     needs: build
@@ -53,10 +57,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Derive Repository Name
+      id: repo_name
+      run: echo "name=${GITHUB_REPOSITORY##*/}" >> $GITHUB_OUTPUT
+
     - name: Download artifact
       uses: actions/download-artifact@v2
       with:
-        name: plugin-${{ github.ref_name }}.zip
+        name: ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip
 
     - name: Create GitHub Release
       id: create_release
@@ -75,6 +83,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./plugin-${{ github.ref_name }}.zip
-        asset_name: plugin-${{ github.ref_name }}.zip
+        asset_path: ./${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip
+        asset_name: ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip
         asset_content_type: application/zip
