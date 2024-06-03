@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
         node-version: '20'
 
@@ -53,7 +53,7 @@ jobs:
       run: zip -r ${{ steps.repo_name.outputs.name }}-${GITHUB_REF_NAME}.zip ${{ steps.repo_name.outputs.name }}
 
     - name: Upload Release Asset
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip
         path: ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip
@@ -64,14 +64,14 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Derive Repository Name
       id: repo_name
       run: echo "name=${GITHUB_REPOSITORY##*/}" >> $GITHUB_OUTPUT
 
     - name: Download artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip
 
