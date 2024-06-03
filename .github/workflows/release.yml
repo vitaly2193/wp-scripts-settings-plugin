@@ -46,8 +46,8 @@ jobs:
     
     - name: Move files to repo folder
       run: |
-        shopt -s extglob
-        mv !(./${{ steps.repo_name.outputs.name }}) ${{ steps.repo_name.outputs.name }}
+        find . -mindepth 1 -maxdepth 1 ! -name ${{ steps.repo_name.outputs.name }} -exec mv -t ${{ steps.repo_name.outputs.name }} {} +
+
 
     - name: Create archive
       run: zip -r ${{ steps.repo_name.outputs.name }}-${GITHUB_REF_NAME}.zip ${{ steps.repo_name.outputs.name }}
