@@ -37,34 +37,34 @@ jobs:
         rm -rf src node_modules .git .github .gitignore package.json package-lock.json composer.json composer.lock phpcs.xml.dist
 
     - name: Create archive
-      run: zip -r plugin-v${GITHUB_REF##*/}.zip .
+      run: zip -r plugin-${{ github.ref_name }}.zip .
 
     - name: Upload Release Asset
       uses: actions/upload-artifact@v2
       with:
-        name: plugin-v${GITHUB_REF##*/}.zip
-        path: plugin-v${GITHUB_REF##*/}.zip
+        name: plugin-${{ github.ref_name }}.zip
+        path: plugin-${{ github.ref_name }}.zip
 
   release:
-      needs: build
-      runs-on: ubuntu-latest
+    needs: build
+    runs-on: ubuntu-latest
 
-      steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: plugin-v${GITHUB_REF_NAME}.zip
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: plugin-${{ github.ref_name }}.zip
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-          assets: plugin-v${GITHUB_REF_NAME}.zip
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        assets: plugin-${{ github.ref_name }}.zip
