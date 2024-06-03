@@ -40,8 +40,13 @@ jobs:
       id: repo_name
       run: echo "name=${GITHUB_REPOSITORY##*/}" >> $GITHUB_OUTPUT
 
+    - name: Create folder with repo name and move files
+      run: |
+        mkdir -p ${{ steps.repo_name.outputs.name }}
+        mv * ${{ steps.repo_name.outputs.name }}
+
     - name: Create archive
-      run: zip -r ${{ steps.repo_name.outputs.name }}-${{ github.ref_name }}.zip .
+      run: zip -r ${{ steps.repo_name.outputs.name }}-${GITHUB_REF_NAME}.zip ${{ steps.repo_name.outputs.name }}
 
     - name: Upload Release Asset
       uses: actions/upload-artifact@v2
