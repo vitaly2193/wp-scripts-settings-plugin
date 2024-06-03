@@ -38,7 +38,7 @@ jobs:
 
     - name: Create archive
       id: create_archive
-      run: zip -r ${{ github.repository_name }}-${{ github.ref_name }}.zip .
+      run: zip -r ${GITHUB_REPOSITORY##*/}-${GITHUB_REF_NAME}.zip .
 
     - name: Upload Release Artifact
       uses: actions/upload-artifact@v2
