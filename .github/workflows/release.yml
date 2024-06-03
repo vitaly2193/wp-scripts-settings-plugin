@@ -59,6 +59,7 @@ jobs:
         name: plugin-${{ github.ref_name }}.zip
 
     - name: Create GitHub Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,4 +68,13 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
-        assets: plugin-${{ github.ref_name }}.zip
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./plugin-${{ github.ref_name }}.zip
+        asset_name: plugin-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
