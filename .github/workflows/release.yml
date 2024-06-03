@@ -43,7 +43,11 @@ jobs:
     - name: Create folder with repo name and move files
       run: |
         mkdir -p ${{ steps.repo_name.outputs.name }}
-        mv * ${{ steps.repo_name.outputs.name }}
+    
+    - name: Move files to repo folder
+      run: |
+        shopt -s extglob
+        mv !(./${{ steps.repo_name.outputs.name }}) ${{ steps.repo_name.outputs.name }}
 
     - name: Create archive
       run: zip -r ${{ steps.repo_name.outputs.name }}-${GITHUB_REF_NAME}.zip ${{ steps.repo_name.outputs.name }}
